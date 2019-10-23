@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from config import IGNORE_ID, sos_id, eos_id, n_tgt_vocab
+from config import IGNORE_ID, sos_id, eos_id, vocab_size
 from .attention import MultiHeadAttention
 from .module import PositionalEncoding, PositionwiseFeedForward
 from .utils import get_attn_key_pad_mask, get_attn_pad_mask, get_non_pad_mask, get_subsequent_mask, pad_list
@@ -13,7 +13,7 @@ class Decoder(nn.Module):
 
     def __init__(
             self, sos_id=sos_id, eos_id=eos_id,
-            n_tgt_vocab=n_tgt_vocab, d_word_vec=512,
+            n_tgt_vocab=vocab_size, d_word_vec=512,
             n_layers=6, n_head=8, d_k=64, d_v=64,
             d_model=512, d_inner=2048, dropout=0.1,
             tgt_emb_prj_weight_sharing=True,
