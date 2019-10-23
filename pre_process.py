@@ -5,8 +5,8 @@ import jieba
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
-from config import train_filename, dev_filename, test_filename, \
-    vocab_file, maxlen_in, maxlen_out, data_file, sos_id, eos_id, n_tgt_vocab, unk_id
+from config import train_filename, dev_filename, test_filename, vocab_file, maxlen_in, maxlen_out, data_file, sos_id, \
+    eos_id, unk_id
 from utils import encode_text
 
 
