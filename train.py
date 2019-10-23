@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
-from config import device, print_freq, sos_id, eos_id, n_src_vocab, n_tgt_vocab, grad_clip, logger
+from config import device, print_freq, sos_id, eos_id, vocab_size, grad_clip, logger
 from data_gen import Douban100wChatDataset, pad_collate
 from transformer.decoder import Decoder
 from transformer.encoder import Encoder
@@ -27,10 +27,10 @@ def train_net(args):
     # Initialize / load checkpoint
     if checkpoint is None:
         # model
-        encoder = Encoder(n_src_vocab, args.n_layers_enc, args.n_head,
+        encoder = Encoder(vocab_size, args.n_layers_enc, args.n_head,
                           args.d_k, args.d_v, args.d_model, args.d_inner,
                           dropout=args.dropout, pe_maxlen=args.pe_maxlen)
-        decoder = Decoder(sos_id, eos_id, n_tgt_vocab,
+        decoder = Decoder(sos_id, eos_id, vocab_size,
                           args.d_word_vec, args.n_layers_dec, args.n_head,
                           args.d_k, args.d_v, args.d_model, args.d_inner,
                           dropout=args.dropout,
