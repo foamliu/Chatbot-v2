@@ -2,6 +2,7 @@ import pickle
 from collections import Counter
 
 import jieba
+import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 from config import train_filename, dev_filename, test_filename, \
@@ -25,13 +26,15 @@ def process(file):
     lengths = []
 
     for line in tqdm(data):
-        sentence = line.strip()
-        seg_list = jieba.cut(sentence.strip())
-        tokens = list(seg_list)
-        word_freq.update(list(tokens))
-        vocab_size = n_tgt_vocab
+        sentences = line.split('\t')
+        for sent in sentences:
+            sentence = sent.strip()
+            seg_list = jieba.cut(sentence.strip())
+            tokens = list(seg_list)
+            word_freq.update(list(tokens))
+            vocab_size = n_tgt_vocab
 
-        lengths.append(len(tokens))
+            lengths.append(len(tokens))
 
     words = word_freq.most_common(vocab_size - 4)
     word_map = {k[0]: v + 4 for v, k in enumerate(words)}
@@ -41,14 +44,14 @@ def process(file):
     word_map['<unk>'] = 3
     print(len(word_map))
     print(words[:100])
-    #
-    # n, bins, patches = plt.hist(lengths, 50, density=True, facecolor='g', alpha=0.75)
-    #
-    # plt.xlabel('Lengths')
-    # plt.ylabel('Probability')
-    # plt.title('Histogram of Lengths')
-    # plt.grid(True)
-    # plt.show()
+
+    n, bins, patches = plt.hist(lengths, 50, density=True, facecolor='g', alpha=0.75)
+
+    plt.xlabel('Lengths')
+    plt.ylabel('Probability')
+    plt.title('Histogram of Lengths')
+    plt.grid(True)
+    plt.show()
 
     word2idx = word_map
     idx2char = {v: k for k, v in word2idx.items()}
