@@ -44,7 +44,7 @@ def pad_collate(batch):
     return default_collate(batch)
 
 
-class AiChallenger2017Dataset(Dataset):
+class Douban100wChatDataset(Dataset):
     def __init__(self, split):
         self.samples = data[split]
 
@@ -53,7 +53,7 @@ class AiChallenger2017Dataset(Dataset):
         src_text = sample['in']
         tgt_text = sample['out']
 
-        return np.array(src_text, dtype=np.long), np.array(tgt_text, np.long)
+        return np.array(src_text, dtype=np.long), np.array(tgt_text, dtype=np.long)
 
     def __len__(self):
         return len(self.samples)
@@ -62,21 +62,20 @@ class AiChallenger2017Dataset(Dataset):
 def main():
     from utils import sequence_to_text
 
-    valid_dataset = AiChallenger2017Dataset('valid')
+    valid_dataset = Douban100wChatDataset('dev')
     print(valid_dataset[0])
 
     with open(vocab_file, 'rb') as file:
         data = pickle.load(file)
 
-    src_idx2char = data['dict']['src_idx2char']
-    tgt_idx2char = data['dict']['tgt_idx2char']
+    idx2char = data['dict']['idx2char']
 
     src_text, tgt_text = valid_dataset[0]
-    src_text = sequence_to_text(src_text, src_idx2char)
-    src_text = ' '.join(src_text)
+    src_text = sequence_to_text(src_text, idx2char)
+    src_text = ''.join(src_text)
     print('src_text: ' + src_text)
 
-    tgt_text = sequence_to_text(tgt_text, tgt_idx2char)
+    tgt_text = sequence_to_text(tgt_text, idx2char)
     tgt_text = ''.join(tgt_text)
     print('tgt_text: ' + tgt_text)
 

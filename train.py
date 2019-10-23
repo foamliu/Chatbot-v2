@@ -6,16 +6,13 @@ import torch
 from torch.utils.tensorboard import SummaryWriter
 
 from config import device, print_freq, sos_id, eos_id, n_src_vocab, n_tgt_vocab, grad_clip, logger
-from data_gen import AiChallenger2017Dataset, pad_collate
+from data_gen import Douban100wChatDataset, pad_collate
 from transformer.decoder import Decoder
 from transformer.encoder import Encoder
 from transformer.loss import cal_performance
 from transformer.optimizer import TransformerOptimizer
 from transformer.transformer import Transformer
 from utils import parse_args, save_checkpoint, AverageMeter, clip_gradient
-
-
-# from torch import nn
 
 
 def train_net(args):
@@ -58,10 +55,10 @@ def train_net(args):
     model = model.to(device)
 
     # Custom dataloaders
-    train_dataset = AiChallenger2017Dataset('train')
+    train_dataset = Douban100wChatDataset('train')
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                shuffle=True, num_workers=args.num_workers)
-    valid_dataset = AiChallenger2017Dataset('valid')
+    valid_dataset = Douban100wChatDataset('valid')
     valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                shuffle=False, num_workers=args.num_workers)
 
