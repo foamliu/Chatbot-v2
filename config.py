@@ -25,8 +25,10 @@ pad_id = 0
 sos_id = 1
 eos_id = 2
 unk_id = 3
-num_train = 4669414
-num_valid = 3870
+num_train = 3216985
+num_dev = 161301
+num_test = 26835
+
 
 train_filename = 'data/douban-multiturn-100w/train.txt'
 dev_filename = 'data/douban-multiturn-100w/dev.txt'
