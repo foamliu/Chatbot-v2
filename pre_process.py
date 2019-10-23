@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 from config import train_filename, dev_filename, test_filename, vocab_file, maxlen_in, maxlen_out, data_file, sos_id, \
-    eos_id, unk_id
+    eos_id, unk_id, vocab_size
 from utils import encode_text
 
 
@@ -32,7 +32,6 @@ def process(file):
             seg_list = jieba.cut(sentence.strip())
             tokens = list(seg_list)
             word_freq.update(list(tokens))
-            vocab_size = n_tgt_vocab
 
             lengths.append(len(tokens))
 
@@ -78,8 +77,9 @@ def get_data(in_file):
             tokens = jieba.cut(sentence.strip())
             out_data = [sos_id] + encode_text(char2idx, tokens) + [eos_id]
 
-        if len(in_data) < maxlen_in and len(out_data) < maxlen_out and unk_id not in in_data and unk_id not in out_data:
-            samples.append({'in': in_data, 'out': out_data})
+            if len(in_data) < maxlen_in and len(out_data) < maxlen_out \
+                    and unk_id not in in_data and unk_id not in out_data:
+                samples.append({'in': in_data, 'out': out_data})
     return samples
 
 
