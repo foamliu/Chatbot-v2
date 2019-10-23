@@ -58,7 +58,7 @@ def train_net(args):
     train_dataset = Douban100wChatDataset('train')
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                shuffle=True, num_workers=args.num_workers)
-    valid_dataset = Douban100wChatDataset('valid')
+    valid_dataset = Douban100wChatDataset('dev')
     valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                shuffle=False, num_workers=args.num_workers)
 
