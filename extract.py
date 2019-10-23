@@ -9,4 +9,3 @@ def extract(filename):
 
 if __name__ == '__main__':
     extract('data/douban-multiturn-100w.zip')
-    extract('data/douban-multiturn-100w.zip')
