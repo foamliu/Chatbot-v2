@@ -8,5 +8,5 @@ def extract(filename):
 
 
 if __name__ == '__main__':
-    extract('data/ai_challenger_translation_train_20170904.zip')
-    extract('data/ai_challenger_translation_validation_20170912.zip')
+    extract('data/douban-multiturn-100w.zip')
+    extract('data/douban-multiturn-100w.zip')
