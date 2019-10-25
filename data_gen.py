@@ -1,13 +1,10 @@
 import pickle
-import time
 
 import numpy as np
 from torch.utils.data import Dataset
 from torch.utils.data.dataloader import default_collate
 
 from config import data_file, vocab_file, IGNORE_ID, pad_id, logger
-
-
 
 
 def get_data(filename):
