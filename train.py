@@ -62,9 +62,6 @@ def train_net(args):
     valid_dataset = Qingyun11wChatDataset('valid')
     valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                shuffle=False, num_workers=args.num_workers)
-    test_dataset = Qingyun11wChatDataset('test')
-    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=1, collate_fn=pad_collate,
-                                              shuffle=False, num_workers=args.num_workers)
 
     # Epochs
     for epoch in range(start_epoch, args.epochs):
@@ -100,7 +97,7 @@ def train_net(args):
         # Save checkpoint
         save_checkpoint(epoch, epochs_since_improvement, model, optimizer, best_loss, is_best)
 
-        test(test_loader, model, logger)
+        test(model, logger)
 
 
 def train(train_loader, model, optimizer, epoch, logger, writer):
@@ -118,6 +115,10 @@ def train(train_loader, model, optimizer, epoch, logger, writer):
         padded_input = padded_input.to(device)
         padded_target = padded_target.to(device)
         input_lengths = input_lengths.to(device)
+
+        print(padded_input)
+        print(input_lengths)
+        print(padded_target)
 
         # Forward prop.
         pred, gold = model(padded_input, input_lengths, padded_target)
@@ -191,7 +192,7 @@ def valid(valid_loader, model, logger):
     return losses.avg
 
 
-def test(test_loader, model, logger):
+def test(model, logger):
     model.eval()
 
     with open(vocab_file, 'rb') as file:
@@ -215,8 +216,8 @@ def test(test_loader, model, logger):
         sentence_in = ''.join([idx2char[idx] for idx in sentence_in])
         sentence_out = ''.join([idx2char[idx] for idx in sentence_out])
         sentence_out = sentence_out.replace('<sos>', '').replace('<eos>', '')
-        print('< ' + sentence_in)
-        print('= ' + sentence_out)
+        logger.info('< ' + sentence_in)
+        logger.info('= ' + sentence_out)
 
         with torch.no_grad():
             nbest_hyps = model.recognize(input=input, input_length=input_length, char_list=idx2char)
@@ -228,7 +229,7 @@ def test(test_loader, model, logger):
             out = ''.join(out)
             out = out.replace('<sos>', '').replace('<eos>', '')
 
-            print('> {}'.format(out))
+            logger.info('> {}'.format(out))
 
 
 def main():
