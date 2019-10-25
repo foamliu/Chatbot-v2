@@ -47,13 +47,13 @@ def process(file):
     print(len(word_map))
     print(words[:100])
 
-    n, bins, patches = plt.hist(lengths, 50, density=True, facecolor='g', alpha=0.75)
+    # n, bins, patches = plt.hist(lengths, 50, density=True, facecolor='g', alpha=0.75)
 
-    plt.xlabel('Lengths')
-    plt.ylabel('Probability')
-    plt.title('Histogram of Lengths')
-    plt.grid(True)
-    plt.show()
+    # plt.xlabel('Lengths')
+    # plt.ylabel('Probability')
+    # plt.title('Histogram of Lengths')
+    # plt.grid(True)
+    # plt.show()
 
     word2idx = word_map
     idx2char = {v: k for k, v in word2idx.items()}
