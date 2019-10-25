@@ -1,65 +1,38 @@
 import pickle
-from collections import Counter
 
 import numpy as np
 from tqdm import tqdm
 
 from config import train_filename, vocab_file, maxlen_in, maxlen_out, sos_id, \
-    eos_id, unk_id, vocab_size
+    eos_id, unk_id
 from utils import encode_text
 
 
-def build_vocab(token, word2idx, idx2char):
-    if token not in word2idx:
-        next_index = len(word2idx)
-        word2idx[token] = next_index
+def build_vocab(token):
+    if token not in char2idx:
+        next_index = len(char2idx)
+        char2idx[token] = next_index
         idx2char[next_index] = token
 
 
 def process(file):
     print('processing {}...'.format(file))
+
     with open(file, 'r', encoding='utf-8') as f:
         data = f.readlines()
 
-    word_freq = Counter()
     lengths = []
 
     for line in tqdm(data):
         sentences = line.split('|')
         for sent in sentences:
             sentence = sent.strip()
-            # seg_list = jieba.cut(sentence.strip())
-            # tokens = list(seg_list)
+            lengths.append(len(sentence))
             tokens = list(sentence)
-            word_freq.update(list(tokens))
-
-            lengths.append(len(tokens))
+            for token in tokens:
+                build_vocab(token)
 
     np.save('lengths.npz', np.array(lengths))
-
-    print(len(word_freq))
-
-    words = word_freq.most_common(vocab_size - 4)
-    word_map = {k[0]: v + 4 for v, k in enumerate(words)}
-    word_map['<pad>'] = 0
-    word_map['<sos>'] = 1
-    word_map['<eos>'] = 2
-    word_map['<unk>'] = 3
-    print(len(word_map))
-    print(words[:100])
-
-    # n, bins, patches = plt.hist(lengths, 50, density=True, facecolor='g', alpha=0.75)
-
-    # plt.xlabel('Lengths')
-    # plt.ylabel('Probability')
-    # plt.title('Histogram of Lengths')
-    # plt.grid(True)
-    # plt.show()
-
-    word2idx = word_map
-    idx2char = {v: k for k, v in word2idx.items()}
-
-    return word2idx, idx2char
 
 
 def get_data(in_file):
@@ -73,11 +46,9 @@ def get_data(in_file):
         in_sentence = sentences[0]
         out_sentence = sentences[1]
 
-        # tokens = jieba.cut(in_sentence.strip())
         tokens = list(in_sentence)
         in_data = encode_text(char2idx, tokens)
 
-        # tokens = jieba.cut(out_sentence.strip())
         tokens = list(out_sentence)
         out_data = [sos_id] + encode_text(char2idx, tokens) + [eos_id]
 
@@ -88,9 +59,12 @@ def get_data(in_file):
 
 
 if __name__ == '__main__':
-    char2idx, idx2char = process(train_filename)
+    char2idx = {'<pad>': 0, '<sos>': 1, '<eos>': 2, '<unk>': 3}
+    idx2char = {0: '<pad>', 1: '<sos>', 2: '<eos>', 3: '<unk>'}
 
+    process(train_filename)
     print(len(char2idx))
+    print(list(char2idx.items())[:100])
 
     data = {
         'dict': {
