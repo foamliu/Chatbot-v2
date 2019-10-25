@@ -73,9 +73,10 @@ if __name__ == '__main__':
         pickle.dump(data, file)
 
     samples = get_data(train_filename)
+    np.random.shuffle(samples)
     num_samples = len(samples)
     num_valid = 1000
-    num_test = 1000
+    num_test = 10
 
     valid = samples[:num_valid]
     test = samples[num_valid:num_valid + num_test]
