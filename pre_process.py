@@ -60,8 +60,8 @@ def process(file):
 
 def get_data(in_file):
     print('getting data {}...'.format(in_file))
-    with open(in_file, 'r', encoding='utf-8') as file:
-        in_lines = file.readlines()
+    with open(in_file, 'r', encoding='utf-8') as f:
+        in_lines = f.readlines()
 
     samples = set()
 
@@ -69,12 +69,12 @@ def get_data(in_file):
         line = in_lines[i].strip()
         sentences = line.split('\t')
         for j in range(1, len(sentences) - 1):
-            sentence = sentences[j]
-            tokens = jieba.cut(sentence.strip())
+            in_sentence = sentences[j]
+            tokens = jieba.cut(in_sentence.strip())
             in_data = encode_text(char2idx, tokens)
 
-            sentence = sentences[j + 1]
-            tokens = jieba.cut(sentence.strip())
+            out_sentence = sentences[j + 1]
+            tokens = jieba.cut(out_sentence.strip())
             out_data = [sos_id] + encode_text(char2idx, tokens) + [eos_id]
 
             if len(in_data) < maxlen_in and len(out_data) < maxlen_out \
