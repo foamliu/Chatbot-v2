@@ -70,14 +70,15 @@ def main():
 
     idx2char = data['dict']['idx2char']
 
-    src_text, tgt_text = valid_dataset[0]
-    src_text = sequence_to_text(src_text, idx2char)
-    src_text = ''.join(src_text)
-    print('src_text: ' + src_text)
+    for item in valid_dataset[:10]:
+        src_text, tgt_text = item
+        src_text = sequence_to_text(src_text, idx2char)
+        src_text = ''.join(src_text)
+        print('src_text: ' + src_text)
 
-    tgt_text = sequence_to_text(tgt_text, idx2char)
-    tgt_text = ''.join(tgt_text)
-    print('tgt_text: ' + tgt_text)
+        tgt_text = sequence_to_text(tgt_text, idx2char)
+        tgt_text = ''.join(tgt_text)
+        print('tgt_text: ' + tgt_text)
 
 
 if __name__ == "__main__":
