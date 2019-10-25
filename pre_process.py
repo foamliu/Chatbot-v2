@@ -32,7 +32,7 @@ def process(file):
             for token in tokens:
                 build_vocab(token)
 
-    np.save('lengths.npz', np.array(lengths))
+    np.save('lengths.npy', np.array(lengths))
 
 
 def get_data(in_file):
