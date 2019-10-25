@@ -100,6 +100,7 @@ def get_non_pad_mask(padded_input, input_lengths=None, pad_idx=None):
     assert input_lengths is not None or pad_idx is not None
     print(padded_input.size())
     print(padded_input.dim())
+    print(input_lengths)
     if input_lengths is not None:
         # padded_input: N x T x ..
         N = padded_input.size(0)
