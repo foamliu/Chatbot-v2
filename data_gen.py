@@ -26,6 +26,7 @@ def pad_collate(batch):
     for i, elem in enumerate(batch):
         src, tgt = elem
         input_length = len(src)
+        print('datagen input_length: ' + str(input_length))
         padded_input = np.pad(src, (0, max_input_len - len(src)), 'constant', constant_values=pad_id)
         padded_target = np.pad(tgt, (0, max_target_len - len(tgt)), 'constant', constant_values=IGNORE_ID)
         batch[i] = (padded_input, padded_target, input_length)
