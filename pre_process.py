@@ -43,17 +43,14 @@ def get_data(in_file):
     samples = []
     for line in lines:
         sentences = line.split('|')
-        in_sentence = sentences[0]
-        out_sentence = sentences[1]
+        in_sentence = sentences[0].strip()
+        out_sentence = sentences[1].strip()
 
         in_data = encode_text(char2idx, in_sentence)
         out_data = [sos_id] + encode_text(char2idx, out_sentence) + [eos_id]
 
-        print(in_sentence)
         print(out_sentence)
-        print(len(in_data) < maxlen_in)
-        print(len(out_data) < maxlen_out)
-        print(unk_id not in in_data)
+        print(out_data)
         print(unk_id not in out_data)
 
         if len(in_data) < maxlen_in and len(out_data) < maxlen_out \
