@@ -49,6 +49,13 @@ def get_data(in_file):
         in_data = encode_text(char2idx, in_sentence)
         out_data = [sos_id] + encode_text(char2idx, out_sentence) + [eos_id]
 
+        print(in_sentence)
+        print(out_sentence)
+        print(len(in_data) < maxlen_in)
+        print(len(out_data) < maxlen_out)
+        print(unk_id not in in_data)
+        print(unk_id not in out_data)
+
         if len(in_data) < maxlen_in and len(out_data) < maxlen_out \
                 and unk_id not in in_data and unk_id not in out_data:
             samples.append((in_data, out_data))
