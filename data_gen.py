@@ -7,12 +7,7 @@ from torch.utils.data.dataloader import default_collate
 
 from config import data_file, vocab_file, IGNORE_ID, pad_id, logger
 
-logger.info('loading samples...')
-start = time.time()
-with open(data_file, 'rb') as file:
-    data = pickle.load(file)
-elapsed = time.time() - start
-logger.info('elapsed: {:.4f}'.format(elapsed))
+
 
 
 def get_data(filename):
@@ -44,16 +39,18 @@ def pad_collate(batch):
     return default_collate(batch)
 
 
-class Douban100wChatDataset(Dataset):
+class Qingyun11wChatDataset(Dataset):
     def __init__(self, split):
+        logger.info('loading {} samples...'.format(split))
+        with open(data_file, 'rb') as file:
+            data = pickle.load(file)
+
         self.samples = data[split]
 
     def __getitem__(self, i):
         sample = self.samples[i]
-        # src_text = sample['in']
-        # tgt_text = sample['out']
-        src_text = sample[0]
-        tgt_text = sample[1]
+        src_text = sample['in']
+        tgt_text = sample['out']
 
         return np.array(src_text, dtype=np.long), np.array(tgt_text, dtype=np.long)
 
@@ -64,7 +61,7 @@ class Douban100wChatDataset(Dataset):
 def main():
     from utils import sequence_to_text
 
-    valid_dataset = Douban100wChatDataset('dev')
+    valid_dataset = Qingyun11wChatDataset('valid')
     print(valid_dataset[0])
 
     with open(vocab_file, 'rb') as file:

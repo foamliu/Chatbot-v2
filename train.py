@@ -1,12 +1,13 @@
 import math
+import pickle
 import time
 
 import numpy as np
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
-from config import device, print_freq, sos_id, eos_id, vocab_size, grad_clip, logger
-from data_gen import Douban100wChatDataset, pad_collate
+from config import device, print_freq, sos_id, eos_id, vocab_size, grad_clip, logger, vocab_file, data_file
+from data_gen import Qingyun11wChatDataset, pad_collate
 from transformer.decoder import Decoder
 from transformer.encoder import Encoder
 from transformer.loss import cal_performance
@@ -55,12 +56,15 @@ def train_net(args):
     model = model.to(device)
 
     # Custom dataloaders
-    train_dataset = Douban100wChatDataset('train')
+    train_dataset = Qingyun11wChatDataset('train')
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                shuffle=True, num_workers=args.num_workers)
-    valid_dataset = Douban100wChatDataset('dev')
+    valid_dataset = Qingyun11wChatDataset('valid')
     valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                shuffle=False, num_workers=args.num_workers)
+    test_dataset = Qingyun11wChatDataset('test')
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=1, collate_fn=pad_collate,
+                                              shuffle=False, num_workers=args.num_workers)
 
     # Epochs
     for epoch in range(start_epoch, args.epochs):
@@ -95,6 +99,8 @@ def train_net(args):
 
         # Save checkpoint
         save_checkpoint(epoch, epochs_since_improvement, model, optimizer, best_loss, is_best)
+
+        test(test_loader, model, logger)
 
 
 def train(train_loader, model, optimizer, epoch, logger, writer):
@@ -183,6 +189,46 @@ def valid(valid_loader, model, logger):
     logger.info('\nValidation Loss {loss.val:.5f} ({loss.avg:.5f})\n'.format(loss=losses))
 
     return losses.avg
+
+
+def test(test_loader, model, logger):
+    model.eval()
+
+    with open(vocab_file, 'rb') as file:
+        data = pickle.load(file)
+
+    idx2char = data['dict']['idx2char']
+    char2idx = data['dict']['char2idx']
+
+    with open(data_file, 'rb') as file:
+        data = pickle.load(file)
+
+    test = data['test']
+
+    for sample in test:
+        sentence_in = sample['in']
+        sentence_out = sample['out']
+
+        input = torch.from_numpy(np.array(sentence_in, dtype=np.long)).to(device)
+        input_length = torch.LongTensor([len(sentence_in)]).to(device)
+
+        sentence_in = ''.join([idx2char[idx] for idx in sentence_in])
+        sentence_out = ''.join([idx2char[idx] for idx in sentence_out])
+        sentence_out = sentence_out.replace('<sos>', '').replace('<eos>', '')
+        print('< ' + sentence_in)
+        print('= ' + sentence_out)
+
+        with torch.no_grad():
+            nbest_hyps = model.recognize(input=input, input_length=input_length, char_list=idx2char)
+            # print(nbest_hyps)
+
+        for hyp in nbest_hyps:
+            out = hyp['yseq']
+            out = [idx2char[idx] for idx in out]
+            out = ''.join(out)
+            out = out.replace('<sos>', '').replace('<eos>', '')
+
+            print('> {}'.format(out))
 
 
 def main():
