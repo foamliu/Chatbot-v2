@@ -37,6 +37,8 @@ def process(file):
 
     np.save('lengths.npz', np.array(lengths))
 
+    print(len(word_freq))
+
     words = word_freq.most_common(vocab_size - 4)
     word_map = {k[0]: v + 4 for v, k in enumerate(words)}
     word_map['<pad>'] = 0
