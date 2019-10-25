@@ -50,8 +50,10 @@ class Douban100wChatDataset(Dataset):
 
     def __getitem__(self, i):
         sample = self.samples[i]
-        src_text = sample['in']
-        tgt_text = sample['out']
+        # src_text = sample['in']
+        # tgt_text = sample['out']
+        src_text = sample[0]
+        tgt_text = sample[1]
 
         return np.array(src_text, dtype=np.long), np.array(tgt_text, dtype=np.long)
 

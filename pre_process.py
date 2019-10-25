@@ -79,7 +79,7 @@ def get_data(in_file):
 
             if len(in_data) < maxlen_in and len(out_data) < maxlen_out \
                     and unk_id not in in_data and unk_id not in out_data:
-                samples.add({'in': in_data, 'out': out_data})
+                samples.add((in_data, out_data))
     return list(samples)
 
 
