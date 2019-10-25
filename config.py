@@ -11,7 +11,7 @@ embedding_size = 300
 hidden_size = 1024
 data_file = 'data.pkl'
 vocab_file = 'vocab.pkl'
-vocab_size = 5000
+vocab_size = 5884
 maxlen_in = 50
 maxlen_out = 50
 # Training parameters

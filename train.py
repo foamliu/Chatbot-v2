@@ -115,7 +115,6 @@ def train(train_loader, model, optimizer, epoch, logger, writer):
         padded_input = padded_input.to(device)
         padded_target = padded_target.to(device)
         input_lengths = input_lengths.to(device)
-        print('train input_lengths: ' + str(input_lengths))
 
         # Forward prop.
         pred, gold = model(padded_input, input_lengths, padded_target)
