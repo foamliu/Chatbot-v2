@@ -63,7 +63,7 @@ def get_data(in_file):
     with open(in_file, 'r', encoding='utf-8') as file:
         in_lines = file.readlines()
 
-    samples = []
+    samples = set()
 
     for i in tqdm(range(len(in_lines))):
         line = in_lines[i].strip()
@@ -79,8 +79,8 @@ def get_data(in_file):
 
             if len(in_data) < maxlen_in and len(out_data) < maxlen_out \
                     and unk_id not in in_data and unk_id not in out_data:
-                samples.append({'in': in_data, 'out': out_data})
-    return samples
+                samples.add({'in': in_data, 'out': out_data})
+    return list(samples)
 
 
 if __name__ == '__main__':
