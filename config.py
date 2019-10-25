@@ -25,9 +25,9 @@ pad_id = 0
 sos_id = 1
 eos_id = 2
 unk_id = 3
-num_train = 1842632
-num_dev = 93076
-num_test = 6501
+num_train = 115325
+num_valid = 1000
+num_test = 10
 
 train_filename = 'data/qingyun.txt'
 
