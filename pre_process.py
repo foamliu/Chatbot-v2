@@ -63,24 +63,33 @@ def get_data(in_file):
     with open(in_file, 'r', encoding='utf-8') as f:
         in_lines = f.readlines()
 
-    samples = set()
+    lines = set()
 
     for i in tqdm(range(len(in_lines))):
         line = in_lines[i].strip()
         sentences = line.split('\t')
         for j in range(1, len(sentences) - 1):
-            in_sentence = sentences[j]
-            tokens = jieba.cut(in_sentence.strip())
-            in_data = encode_text(char2idx, tokens)
+            in_sentence = sentences[j].replace('|', '')
+            out_sentence = sentences[j + 1].replace('|', '')
+            sample = in_sentence + '|' + out_sentence
+            lines.add(sample)
 
-            out_sentence = sentences[j + 1]
-            tokens = jieba.cut(out_sentence.strip())
-            out_data = [sos_id] + encode_text(char2idx, tokens) + [eos_id]
+    samples = []
+    for line in list(lines):
+        tokens = line.split('|')
+        in_sentence = tokens[0]
+        out_sentence = tokens[1]
 
-            if len(in_data) < maxlen_in and len(out_data) < maxlen_out \
-                    and unk_id not in in_data and unk_id not in out_data:
-                samples.add((in_data, out_data))
-    return list(samples)
+        tokens = jieba.cut(in_sentence.strip())
+        in_data = encode_text(char2idx, tokens)
+
+        tokens = jieba.cut(out_sentence.strip())
+        out_data = [sos_id] + encode_text(char2idx, tokens) + [eos_id]
+
+        if len(in_data) < maxlen_in and len(out_data) < maxlen_out \
+                and unk_id not in in_data and unk_id not in out_data:
+            samples.append((in_data, out_data))
+    return samples
 
 
 if __name__ == '__main__':
