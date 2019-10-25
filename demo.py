@@ -10,7 +10,7 @@ from config import device, logger, data_file, vocab_file
 from transformer.transformer import Transformer
 
 if __name__ == '__main__':
-    filename = 'transformer.pt'
+    filename = 'chatbot-v2.pt'
     print('loading {}...'.format(filename))
     start = time.time()
     model = Transformer()
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     start = time.time()
     with open(data_file, 'rb') as file:
         data = pickle.load(file)
-        samples = data['valid']
+        samples = data['test']
     elapsed = time.time() - start
     logger.info('elapsed: {:.4f} seconds'.format(elapsed))
 
@@ -31,8 +31,8 @@ if __name__ == '__main__':
     start = time.time()
     with open(vocab_file, 'rb') as file:
         data = pickle.load(file)
-        src_idx2char = data['dict']['src_idx2char']
-        tgt_idx2char = data['dict']['tgt_idx2char']
+        idx2char = data['dict']['idx2char']
+
     elapsed = time.time() - start
     logger.info('elapsed: {:.4f} seconds'.format(elapsed))
 
@@ -45,8 +45,8 @@ if __name__ == '__main__':
         input = torch.from_numpy(np.array(sentence_in, dtype=np.long)).to(device)
         input_length = torch.LongTensor([len(sentence_in)]).to(device)
 
-        sentence_in = ' '.join([src_idx2char[idx] for idx in sentence_in])
-        sentence_out = ''.join([tgt_idx2char[idx] for idx in sentence_out])
+        sentence_in = ''.join([idx2char[idx] for idx in sentence_in])
+        sentence_out = ''.join([idx2char[idx] for idx in sentence_out])
         sentence_out = sentence_out.replace('<sos>', '').replace('<eos>', '')
         print('< ' + sentence_in)
         print('= ' + sentence_out)
@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
         for hyp in nbest_hyps:
             out = hyp['yseq']
-            out = [tgt_idx2char[idx] for idx in out]
+            out = [idx2char[idx] for idx in out]
             out = ''.join(out)
             out = out.replace('<sos>', '').replace('<eos>', '')
 
