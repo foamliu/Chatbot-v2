@@ -116,9 +116,9 @@ def train(train_loader, model, optimizer, epoch, logger, writer):
         padded_target = padded_target.to(device)
         input_lengths = input_lengths.to(device)
 
-        print(padded_input)
-        print(input_lengths)
-        print(padded_target)
+        print(padded_input.size())
+        print(input_lengths.size())
+        print(padded_target.size())
 
         # Forward prop.
         pred, gold = model(padded_input, input_lengths, padded_target)
