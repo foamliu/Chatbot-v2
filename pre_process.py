@@ -3,6 +3,7 @@ from collections import Counter
 
 import jieba
 import matplotlib.pyplot as plt
+import numpy as np
 from tqdm import tqdm
 
 from config import train_filename, dev_filename, test_filename, vocab_file, maxlen_in, maxlen_out, data_file, sos_id, \
@@ -34,6 +35,8 @@ def process(file):
             word_freq.update(list(tokens))
 
             lengths.append(len(tokens))
+
+    np.save('lengths.npz', np.array(lengths))
 
     words = word_freq.most_common(vocab_size - 4)
     word_map = {k[0]: v + 4 for v, k in enumerate(words)}
