@@ -70,8 +70,8 @@ def main():
 
     idx2char = data['dict']['idx2char']
 
-    for item in valid_dataset[:10]:
-        src_text, tgt_text = item
+    for i in range(10):
+        src_text, tgt_text = valid_dataset[i]
         src_text = sequence_to_text(src_text, idx2char)
         src_text = ''.join(src_text)
         print('src_text: ' + src_text)
