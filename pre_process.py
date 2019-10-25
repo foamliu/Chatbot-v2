@@ -4,7 +4,7 @@ import numpy as np
 from tqdm import tqdm
 
 from config import train_filename, vocab_file, maxlen_in, maxlen_out, sos_id, \
-    eos_id, unk_id
+    eos_id, unk_id, data_file
 from utils import encode_text
 
 
@@ -73,17 +73,25 @@ if __name__ == '__main__':
         pickle.dump(data, file)
 
     samples = get_data(train_filename)
+    num_samples = len(samples)
+    num_valid = 1000
+    num_test = 1000
+
+    valid = samples[:num_valid]
+    test = samples[num_valid:num_valid + num_test]
+    train = samples[num_valid + num_test:]
+
     print('num_samples: ' + str(len(samples)))
 
-    # data = {
-    #     'train': train,
-    #     'dev': dev,
-    #     'test': test
-    # }
-    #
-    # print('num_train: ' + str(len(train)))
-    # print('num_dev: ' + str(len(dev)))
-    # print('num_test: ' + str(len(test)))
+    data = {
+        'train': train,
+        'valid': valid,
+        'test': test
+    }
 
-    # with open(data_file, 'wb') as file:
-    #     pickle.dump(data, file)
+    print('num_train: ' + str(len(train)))
+    print('num_valid: ' + str(len(valid)))
+    print('num_test: ' + str(len(test)))
+
+    with open(data_file, 'wb') as file:
+        pickle.dump(data, file)
