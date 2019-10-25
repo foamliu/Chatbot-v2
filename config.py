@@ -11,7 +11,7 @@ embedding_size = 300
 hidden_size = 1024
 data_file = 'data.pkl'
 vocab_file = 'vocab.pkl'
-vocab_size = 50000
+vocab_size = 5000
 maxlen_in = 50
 maxlen_out = 50
 # Training parameters
@@ -29,11 +29,7 @@ num_train = 1842632
 num_dev = 93076
 num_test = 6501
 
-
-train_filename = 'data/douban-multiturn-100w/train.txt'
-dev_filename = 'data/douban-multiturn-100w/dev.txt'
-test_filename = 'data/douban-multiturn-100w/test.txt'
-
+train_filename = 'data/qingyun.txt'
 
 
 def get_logger():

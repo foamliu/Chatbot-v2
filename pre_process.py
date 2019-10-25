@@ -1,12 +1,10 @@
 import pickle
 from collections import Counter
 
-import jieba
-import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 
-from config import train_filename, dev_filename, test_filename, vocab_file, maxlen_in, maxlen_out, data_file, sos_id, \
+from config import train_filename, vocab_file, maxlen_in, maxlen_out, sos_id, \
     eos_id, unk_id, vocab_size
 from utils import encode_text
 
@@ -27,11 +25,12 @@ def process(file):
     lengths = []
 
     for line in tqdm(data):
-        sentences = line.split('\t')
+        sentences = line.split('|')
         for sent in sentences:
             sentence = sent.strip()
-            seg_list = jieba.cut(sentence.strip())
-            tokens = list(seg_list)
+            # seg_list = jieba.cut(sentence.strip())
+            # tokens = list(seg_list)
+            tokens = list(sentence)
             word_freq.update(list(tokens))
 
             lengths.append(len(tokens))
@@ -64,29 +63,20 @@ def process(file):
 def get_data(in_file):
     print('getting data {}...'.format(in_file))
     with open(in_file, 'r', encoding='utf-8') as f:
-        in_lines = f.readlines()
-
-    lines = set()
-
-    for i in tqdm(range(len(in_lines))):
-        line = in_lines[i].strip()
-        sentences = line.split('\t')
-        for j in range(1, len(sentences) - 1):
-            in_sentence = sentences[j].replace('|', '')
-            out_sentence = sentences[j + 1].replace('|', '')
-            sample = in_sentence + '|' + out_sentence
-            lines.add(sample)
+        lines = f.readlines()
 
     samples = []
-    for line in list(lines):
-        tokens = line.split('|')
-        in_sentence = tokens[0]
-        out_sentence = tokens[1]
+    for line in lines:
+        sentences = line.split('|')
+        in_sentence = sentences[0]
+        out_sentence = sentences[1]
 
-        tokens = jieba.cut(in_sentence.strip())
+        # tokens = jieba.cut(in_sentence.strip())
+        tokens = list(in_sentence)
         in_data = encode_text(char2idx, tokens)
 
-        tokens = jieba.cut(out_sentence.strip())
+        # tokens = jieba.cut(out_sentence.strip())
+        tokens = list(out_sentence)
         out_data = [sos_id] + encode_text(char2idx, tokens) + [eos_id]
 
         if len(in_data) < maxlen_in and len(out_data) < maxlen_out \
@@ -109,19 +99,18 @@ if __name__ == '__main__':
     with open(vocab_file, 'wb') as file:
         pickle.dump(data, file)
 
-    train = get_data(train_filename)
-    dev = get_data(dev_filename)
-    test = get_data(test_filename)
+    samples = get_data(train_filename)
+    print('num_samples: ' + str(len(samples)))
 
-    data = {
-        'train': train,
-        'dev': dev,
-        'test': test
-    }
+    # data = {
+    #     'train': train,
+    #     'dev': dev,
+    #     'test': test
+    # }
+    #
+    # print('num_train: ' + str(len(train)))
+    # print('num_dev: ' + str(len(dev)))
+    # print('num_test: ' + str(len(test)))
 
-    print('num_train: ' + str(len(train)))
-    print('num_dev: ' + str(len(dev)))
-    print('num_test: ' + str(len(test)))
-
-    with open(data_file, 'wb') as file:
-        pickle.dump(data, file)
+    # with open(data_file, 'wb') as file:
+    #     pickle.dump(data, file)
