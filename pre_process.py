@@ -46,15 +46,12 @@ def get_data(in_file):
         in_sentence = sentences[0]
         out_sentence = sentences[1]
 
-        tokens = list(in_sentence)
-        in_data = encode_text(char2idx, tokens)
+        in_data = encode_text(char2idx, in_sentence)
+        out_data = [sos_id] + encode_text(char2idx, out_sentence) + [eos_id]
 
-        tokens = list(out_sentence)
-        out_data = [sos_id] + encode_text(char2idx, tokens) + [eos_id]
-
-        # if len(in_data) < maxlen_in and len(out_data) < maxlen_out \
-        #         and unk_id not in in_data and unk_id not in out_data:
-        samples.append((in_data, out_data))
+        if len(in_data) < maxlen_in and len(out_data) < maxlen_out \
+                and unk_id not in in_data and unk_id not in out_data:
+            samples.append((in_data, out_data))
     return samples
 
 
